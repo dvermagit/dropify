@@ -1,6 +1,7 @@
-import * as dotenv from "dotenv";
 import { defineConfig } from "drizzle-kit";
+import * as dotenv from "dotenv";
 
+// Load environment variables from .env.local
 dotenv.config({ path: ".env.local" });
 
 if (!process.env.DATABASE_URL) {
@@ -14,10 +15,12 @@ export default defineConfig({
   dbCredentials: {
     url: process.env.DATABASE_URL!,
   },
+  // Configure migrations table
   migrations: {
     table: "__drizzle_migrations",
     schema: "public",
   },
+  // Additional options
   verbose: true,
   strict: true,
 });

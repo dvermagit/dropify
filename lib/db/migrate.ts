@@ -1,5 +1,5 @@
-import { migrate } from "drizzle-orm/neon-http/migrator";
 import { drizzle } from "drizzle-orm/neon-http";
+import { migrate } from "drizzle-orm/neon-http/migrator";
 import { neon } from "@neondatabase/serverless";
 
 import * as dotenv from "dotenv";
@@ -17,7 +17,7 @@ async function runMigration() {
     await migrate(db, { migrationsFolder: "./drizzle" });
     console.log("Migration complete");
   } catch (error) {
-    console.log("Migration complete");
+    console.log("Migration failed");
     process.exit(1);
   }
 }
