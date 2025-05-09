@@ -7,7 +7,7 @@ import { FileObject } from "imagekit/dist/libs/interfaces";
 import { NextResponse } from "next/server";
 
 const imagekit = new ImageKit({
-  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KE || ""!,
+  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || ""!,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
   urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || "",
 });

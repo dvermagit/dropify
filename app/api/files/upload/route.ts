@@ -1,41 +1,40 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
-import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import ImageKit from "imagekit";
-import { NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 
+// Initialize ImageKit with your credentials
 const imagekit = new ImageKit({
-  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KE || ""!,
+  publicKey: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY || "",
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY || "",
   urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || "",
 });
 
-export async function POST(request: NextResponse) {
+export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
     if (!userId) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    //Parse formData
     const formData = await request.formData();
     const file = formData.get("file") as File;
     const formUserId = formData.get("userId") as string;
     const parentId = (formData.get("parentId") as string) || null;
 
+    // Verify the user is uploading to their own account
     if (formUserId !== userId) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     if (!file) {
-      return NextResponse.json(
-        { message: "Invalid file upload data" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
+    // Check if parent folder exists if parentId is provided
     if (parentId) {
       const [parentFolder] = await db
         .select()
@@ -47,16 +46,19 @@ export async function POST(request: NextResponse) {
             eq(files.isFolder, true)
           )
         );
-    } else {
-      return NextResponse.json(
-        { message: "Parent folder not found" },
-        { status: 400 }
-      );
+
+      if (!parentFolder) {
+        return NextResponse.json(
+          { error: "Parent folder not found" },
+          { status: 404 }
+        );
+      }
     }
 
+    // Only allow image uploads
     if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
       return NextResponse.json(
-        { message: "Only images amd pdfs are allowed" },
+        { error: "Only image files are supported" },
         { status: 400 }
       );
     }
@@ -64,24 +66,24 @@ export async function POST(request: NextResponse) {
     const buffer = await file.arrayBuffer();
     const fileBuffer = Buffer.from(buffer);
 
+    const originalFilename = file.name;
+    const fileExtension = originalFilename.split(".").pop() || "";
+    const uniqueFilename = `${uuidv4()}.${fileExtension}`;
+
+    // Create folder path based on parent folder if exists
     const folderPath = parentId
       ? `/dropify/${userId}/folders/${parentId}`
       : `/dropify/${userId}`;
 
-    const originalFileName = file.name;
-    const fileExtension = originalFileName.split("/")[1];
-    const uniqueFileName = `${uuidv4()}.${fileExtension}`;
-    //Check for empty extension
-    //validation for not storing exe,php
     const uploadResponse = await imagekit.upload({
       file: fileBuffer,
-      fileName: uniqueFileName,
+      fileName: uniqueFilename,
       folder: folderPath,
       useUniqueFileName: false,
     });
 
     const fileData = {
-      name: originalFileName,
+      name: originalFilename,
       path: uploadResponse.filePath,
       size: file.size,
       type: file.type,
@@ -90,7 +92,7 @@ export async function POST(request: NextResponse) {
       userId: userId,
       parentId: parentId,
       isFolder: false,
-      isStared: false,
+      isStarred: false,
       isTrash: false,
     };
 
@@ -98,8 +100,9 @@ export async function POST(request: NextResponse) {
 
     return NextResponse.json(newFile);
   } catch (error) {
+    console.error("Error uploading file:", error);
     return NextResponse.json(
-      { message: "Failed to upload file" },
+      { error: "Failed to upload file" },
       { status: 500 }
     );
   }
