@@ -1,4 +1,4 @@
-"use client"; // Essential for Next.js 13+ App Router if using hooks/context
+"use client";
 
 import {
   ThemeProvider as NextThemeProvider,
