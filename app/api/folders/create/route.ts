@@ -3,7 +3,6 @@ import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import { eq, and } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(request: NextRequest) {
