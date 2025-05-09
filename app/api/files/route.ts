@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
     }
     return NextResponse.json(userFiles);
   } catch (error) {
+    console.error("Error fetching files:", error);
     return NextResponse.json(
       { message: "Failed to fetch files" },
       { status: 500 }

@@ -136,7 +136,7 @@ export default function Home() {
                     color="primary"
                     endContent={<ArrowRight className="h-4 w-4" />}
                   >
-                    Let's Go
+                    let&#39;s go
                   </Button>
                 </Link>
               </div>

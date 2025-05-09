@@ -243,11 +243,11 @@ export default function FileList({
   const handleDownloadFile = async (file: FileType) => {
     try {
       // Show loading toast
-      const loadingToastId = addToast({
-        title: "Preparing Download",
-        description: `Getting "${file.name}" ready for download...`,
-        color: "primary",
-      });
+      // const loadingToastId = addToast({
+      //   title: "Preparing Download",
+      //   description: `Getting "${file.name}" ready for download...`,
+      //   color: "primary",
+      // });
 
       // For images, we can use the ImageKit URL directly with optimized settings
       if (file.type.startsWith("image/")) {

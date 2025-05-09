@@ -1,9 +1,7 @@
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
-import next from "next";
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 
 export async function POST(request: NextRequest) {
   try {
@@ -43,6 +41,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(newFile);
   } catch (error) {
+    console.error("Failed to save info to database", error);
     return NextResponse.json(
       { message: "Failed to save info to database" },
       { status: 500 }

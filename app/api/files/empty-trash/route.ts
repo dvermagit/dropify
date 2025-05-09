@@ -41,11 +41,11 @@ export async function DELETE() {
 
           if (file.fileUrl) {
             const urlWithoutQuery = file.fileUrl.split("?")[0];
-            const imagekitFileId = urlWithoutQuery.split("/").pop();
+            imagekitFileId = urlWithoutQuery.split("/").pop();
           }
 
           if (!imagekitFileId && file.path) {
-            const imagekitFileId = file.path.split("/").pop();
+            imagekitFileId = file.path.split("/").pop();
           }
 
           if (imagekitFileId) {
@@ -85,7 +85,7 @@ export async function DELETE() {
 
     return NextResponse.json({
       success: true,
-      message: "Successfully deleted $(deletedFiles.length) files from trash",
+      message: `Successfully deleted ${deletedFiles.length} files from trash`,
     });
   } catch (error) {
     console.error("Error emptying trash", error);
