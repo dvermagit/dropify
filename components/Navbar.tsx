@@ -133,7 +133,7 @@ export default function Navbar({ user }: NavbarProps) {
         isScrolled ? "shadow-sm" : ""
       }`}
     >
-      <div className="container mx-auto py-3 md:py-4 px-4 md:px-6">
+      <div className="container mx-auto py-2.5 md:py-2.5 px-4 md:px-6">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 z-10">
