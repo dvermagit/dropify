@@ -232,7 +232,7 @@ export default function FileUploadForm({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="text-primary cursor-pointer font-medium inline bg-transparent border-0 p-0 m-0"
+                  className="text-primary font-extrabold cursor-pointer text-2xl inline bg-transparent border-0 p-0 m-0"
                 >
                   browse
                 </button>
