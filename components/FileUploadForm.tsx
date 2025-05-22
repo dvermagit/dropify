@@ -223,6 +223,8 @@ export default function FileUploadForm({
             : "border-default-300 hover:border-primary/5"
         }`}
       >
+        {/* yhan file ka mtlb image, pdf, etc h  */}
+        {/* Agar file selected nhi h toh X vrna Y */}
         {!file ? (
           <div className="space-y-3">
             <FileUp className="h-12 w-12 mx-auto text-primary/70" />
